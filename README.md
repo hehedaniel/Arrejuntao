@@ -6,6 +6,8 @@ Pensado para los trabajos de clase: cuando tienes que poner varias capturas segu
 
 Todo se procesa en tu navegador: las imágenes no se suben a ningún sitio.
 
+![Interfaz de Arrejuntao](docs/interfaz.png)
+
 ## Qué hace
 
 - **Añadir imágenes** arrastrándolas, eligiéndolas o pegándolas con `Ctrl + V` (ideal con `Win + Shift + S`).
@@ -26,22 +28,15 @@ Los ajustes se recuerdan en el navegador para la próxima vez. Las imágenes no 
 4. Ajusta el aspecto en el panel de la izquierda.
 5. Pulsa **Copiar imagen** y pégala en Word con `Ctrl + V`, o **Descargar PNG**.
 
+Resultado con cuatro capturas, dos por fila y con los títulos numerados:
+
+![Ejemplo de resultado](docs/ejemplo.png)
+
 ## Cómo funciona
 
 Es un único archivo `index.html` con HTML, CSS y JavaScript, sin dependencias ni proceso de compilación.
 
 La imagen final se dibuja en un `<canvas>`: para cada captura se calcula su tamaño escalado al alto común, se pinta el recorte con `drawImage` y se escribe el título con `fillText`, partiéndolo en líneas con `measureText` si no cabe. El resultado se convierte a PNG con `canvas.toBlob()`.
-
-## Usarlo en local
-
-Abre `index.html` en el navegador. No hace falta instalar nada.
-
-## Despliegue
-
-Al ser una página estática, sirve tal cual en:
-
-- **GitHub Pages**: *Settings → Pages → Deploy from a branch → `main` / `(root)`*.
-- **Vercel**: importar el repositorio con *Framework Preset: Other* y sin comando de build.
 
 ## Licencia
 

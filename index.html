@@ -234,12 +234,19 @@ dialog::backdrop{background:rgba(8,12,24,.55)}
     const list = [...files].filter(f => f.type.startsWith("image/"));
     if (!list.length) { say("Esos archivos no son imágenes."); return; }
     if (state.items.length && state.items.every(it => it.sample)) state.items = [];
-    let pending = list.length;
-    list.forEach(f => {
-      const url = URL.createObjectURL(f); const img = new Image();
-      img.onload = () => { state.items.push({ id: ++uid, img, name: f.name || "captura.png", caption: "", crop: null, sample: false }); if (--pending === 0) { renderItems(); render(); say(list.length + (list.length === 1 ? " imagen añadida." : " imágenes añadidas.")); } };
-      img.onerror = () => { if (--pending === 0) { renderItems(); render(); } say("No se pudo abrir " + f.name + "."); };
-      img.src = url;
+    // se cargan todas y se añaden en el mismo orden en que se eligieron
+    const loads = list.map(f => new Promise(res => {
+      const img = new Image();
+      img.onload = () => res({ img, name: f.name || "captura.png" });
+      img.onerror = () => res(null);
+      img.src = URL.createObjectURL(f);
+    }));
+    Promise.all(loads).then(results => {
+      const ok = results.filter(Boolean);
+      ok.forEach(r => state.items.push({ id: ++uid, img: r.img, name: r.name, caption: "", crop: null, sample: false }));
+      renderItems(); render();
+      const failed = results.length - ok.length;
+      say(ok.length + (ok.length === 1 ? " imagen añadida." : " imágenes añadidas.") + (failed ? " " + failed + " no se pudieron abrir." : ""));
     });
   }
   $("pick").onclick = () => $("file").click();
